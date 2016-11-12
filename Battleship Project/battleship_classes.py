@@ -108,7 +108,6 @@ class Board():
         elif rotation == 2:
             replacement = VERTICAL_SHIP
 
-        print(ship_coords)
         for coord in ship_coords:
             self.board = replace_coordinate(
                 coord, self.board, replacement
