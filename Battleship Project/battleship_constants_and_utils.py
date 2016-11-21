@@ -1,5 +1,6 @@
 import os
 
+
 SHIP_INFO = [
     ("Aircraft Carrier", 5),
     ("Battleship", 4),
@@ -58,15 +59,18 @@ def replace_coordinate(coordinate, board, replacement):
     
     return board
 
-def print_boards(boards, copy=None):
+def print_boards(boards, hide_index=None, copy=None):
     """Both players' boards are passed in as a list,
        both boards are printed side by side"""
     if not copy:
         rows = [[],[]]
-        for i in range(2):
-            all_rows = [s.replace(VERTICAL_SHIP, EMPTY) for s in boards[i]]
-            all_rows = [s.replace(HORIZONTAL_SHIP, EMPTY) for s in all_rows]
-            rows[i].append(all_rows)
+        all_rows = [s.replace(VERTICAL_SHIP, EMPTY) for s in boards[hide_index]]
+        all_rows = [s.replace(HORIZONTAL_SHIP, EMPTY) for s in all_rows]
+        rows[hide_index].append(all_rows)
+
+        for i in [0, 1]:
+            if not i == hide_index:
+                rows[i].append(boards[i])
                     
         board_1 = rows[0][0]
         board_2 = rows[1][0]
@@ -88,5 +92,3 @@ def print_boards(boards, copy=None):
         row_num += 1
 
     
-    
-
