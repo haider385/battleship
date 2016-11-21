@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from battleship_constants_and_utils import (
     EMPTY, BOARD_SIZE, print_boards, clear_screen,
     X_AXIS, Y_AXIS, replace_coordinate, get_coordinate,
@@ -27,12 +28,24 @@ class Player():
             clear_screen()
             print(" That is not your name, it is nothing.")
             self.get_name()
-        
+
+    def generate_display_board(self):
+        copy_copy = deepcopy(self.copy)
+        display_board = deepcopy(self.player_board.board)
+        for letter in X_AXIS:
+            for num in Y_AXIS:
+                coord = '{}{}'.format(letter, num)
+                value = get_coordinate(coord, display_board)
+                if value != EMPTY:
+                    replace_coordinate(coord, copy_copy, value)
+
+        self.display_board = copy_copy
 
     def make_guess(self, guess_board, player, opponent, copies):
         """Takes a guess as input from the player and checks whether
            or not there is a ship there"""
 
+        self.generate_display_board()
         guess = input(
             "\n {}, its your turn to guess: \n\n ".format(self.name)
             ).strip().lower()
@@ -43,9 +56,9 @@ class Player():
                   "e.g. {}".format(random.choice(
                       self.player_board.all_coords)))
             if self.player == 1:
-                print_boards([self.player_board.board, opponent.player_board.board])
+                print_boards([self.display_board, opponent.player_board.board], 1)
             else:
-                print_boards([opponent.player_board.board, self.player_board.board]) 
+                print_boards([opponent.player_board.board, self.display_board], 0) 
             self.make_guess(guess_board, player, opponent, copies)
             
         elif guess in self.guesses:
@@ -53,9 +66,9 @@ class Player():
             print(" You have already guessed that coordinate, " +
                   "pick a different one.")
             if self.player == 1:
-                print_boards([self.player_board.board, opponent.player_board.board])
+                print_boards([self.display_board, opponent.player_board.board], 1)
             else:
-                print_boards([opponent.player_board.board, self.player_board.board]) 
+                print_boards([opponent.player_board.board, self.display_board], 0) 
             self.make_guess(guess_board, player, opponent, copies)
             
         else:
@@ -67,8 +80,17 @@ class Player():
             elif get_coordinate(guess, opponent.player_board.board) == EMPTY:
                 replace_coordinate(
                     guess, opponent.player_board.board, MISS)
-                clear_screen()    
-                print(" {} has missed.".format(self.name))
+                clear_screen()
+                
+                if self.player == 1:
+                    print_boards([self.display_board, opponent.player_board.board], 1)
+                else:
+                    print_boards([opponent.player_board.board, self.display_board], 0) 
+                print("\n {}, you have missed.".format(self.name))
+                input(" Press ENTER to end your turn.")
+                clear_screen()
+
+
         
         
         
@@ -153,16 +175,16 @@ class Board():
             player.name, player.name))
         self.check_sunk(player, opponent, copies)
         if player.player == 1:
-            print_boards([player.player_board.board, opponent.player_board.board])
+            print_boards([player.display_board, opponent.player_board.board], 1)
         else:
-            print_boards([opponent.player_board.board, player.player_board.board]) 
+            print_boards([opponent.player_board.board, player.display_board], 0) 
             
 
     def game_over(self, player, opponent, copies):
         """Once a player has destroyed all the other's ships,
            the game will finish and a message will be displayed"""
         clear_screen()
-        print_boards(copies, True)
+        print_boards(copies, copy=True)
         print("\n {} wins! All of {}'s ships have been destroyed!".format(
             player.name, opponent.name))
         print(" Above shows where you both originally placed your ships.")
@@ -304,13 +326,4 @@ class Ship():
         if coords_good:
             player.player_board.plot_ship(ship_coords, self.name, rotation)
 
-        
-        
             
-            
-        
-        
-
-
-        
-
