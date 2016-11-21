@@ -91,11 +91,8 @@ class Player():
                 clear_screen()
 
 
-        
-        
-        
-        
 
+                
 class Board():
     
     def __init__(self):
@@ -162,8 +159,6 @@ class Board():
         if not self.all_ships:
             self.game_over(player, opponent, copies)
                     
-            
-            
 
     def hit_ship(self, player, opponent, hit_coord, copies):
         """After a ship is hit, it is marked on the grid
