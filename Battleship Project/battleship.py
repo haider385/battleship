@@ -67,20 +67,43 @@ def main():
 
     player_1_board_copy = deepcopy(players[0])
     player_2_board_copy = deepcopy(players[1])
+    
     copies = [
         player_1_board_copy.player_board.board,
         player_2_board_copy.player_board.board,
         ]
+
+    player_1.copy = copies[0]
+    player_2.copy = copies[1]
+
     
     while True:
         for i in range(2):
+            player_1.generate_display_board()
+            player_2.generate_display_board()
             
             guess_boards = [
                 guess_board_1.board,
                 guess_board_2.board,
                 ]
+
+            display_boards = [
+                players[0].display_board,
+                players[1].display_board
+                ]
             
-            print_boards(guess_boards)
+            print(" Look away {}. ".format(
+                get_opponent(players[i], players).name))
+            input(" {}, hit ENTER to start your turn. ".format(
+                players[i].name))
+
+            clear_screen()
+            
+
+            if i == 0:
+                print_boards([display_boards[0],guess_boards[1]], 1)
+            else:
+                print_boards([guess_boards[0],display_boards[1]], 0)
             
             players[i].make_guess(
                 guess_boards[i],
